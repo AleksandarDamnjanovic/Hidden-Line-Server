@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,11 +23,69 @@ public class chatRoom extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");
+		
 		boolean mobile=false;
 		if(request.getParameter("mobile")!=null)
 			mobile=true;
 
-		if (request.getSession().getAttribute("status") != null) {
+		if(mobile) {
+			
+			ServletContext con = getServletContext();
+			ArrayList<String> users = (ArrayList) con.getAttribute("userNames");
+			ArrayList<String> passwords = (ArrayList) con.getAttribute("userPasswords");
+			String curentUser = "";
+			String chatWith="";
+			int reference=1;
+			
+			if (request.getParameter("userName") != null &&
+					request.getParameter("password") != null && 
+					request.getParameter("chatWith") != null &&
+					request.getParameter("reference")!=null) {
+				
+				String testName = request.getParameter("userName").toString();
+				String code = request.getParameter("password").toString();
+				
+				try {
+					reference=Integer.parseInt(request.getParameter("reference").toString());
+				}catch(Exception e) {e.printStackTrace();}
+				
+				chatWith=request.getParameter("chatWith").toString();
+
+				if (users.contains(testName)) {
+
+					int index = -1;
+					loop: for (int i = 0; i < users.size(); i++)
+						if (users.get(i).toString().equals(testName)) {
+							index = i;
+							break loop;
+						}
+
+					if (code.equals(passwords.get(index).toString())) {
+						curentUser = request.getParameter("userName").toString();
+
+					}
+				}
+
+			}
+			
+			if (request.getParameter("submit") != null && request.getParameter("message") != null)
+				Records.updateSubList(curentUser, chatWith, curentUser, request.getParameter("message").toString());
+			
+			ArrayList<String>log=Records.searchSubElement(curentUser, chatWith);
+			String fullMessage="";
+			
+			if(log!=null)
+				if(log.size()>0 && reference<=log.size())
+					for(int i=reference;i<log.size();i++)
+						fullMessage+=log.get(i)+"\n";
+			
+			response.getWriter().print(fullMessage);
+			
+		}else {
+			
+			if (request.getSession().getAttribute("status") != null) {
 			if (request.getSession().getAttribute("status").toString().equals("client")) {
 				String user = "";
 				if (request.getSession().getAttribute("userName") != null)
@@ -45,18 +104,7 @@ public class chatRoom extends HttpServlet {
 					if (request.getParameter("submit") != null && request.getParameter("message") != null)
 						Records.updateSubList(user, chatWith, user, request.getParameter("message").toString());
 
-					ArrayList<String>log=Records.searchSubElement(user, chatWith);
-					String fullMessage="";
-					
-					if(log!=null)
-						if(log.size()>0)
-							for(int i=0;i<log.size();i++)
-								fullMessage+=log.get(i)+"\n";
-					
-					if(mobile)
-						response.getWriter().print(fullMessage);
-					else
-						request.getRequestDispatcher("chatRoom.jsp").forward(request, response);
+					request.getRequestDispatcher("chatRoom.jsp").forward(request, response);
 				
 				} else {
 					if(request.getSession().getAttribute("status")!=null)
@@ -76,6 +124,10 @@ public class chatRoom extends HttpServlet {
 			
 			response.sendRedirect("/");
 		}
+			
+		}
+		
+		
 	}
 
 }

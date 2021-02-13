@@ -40,12 +40,13 @@ public class mainHoll extends HttpServlet {
 				mobile = true;
 
 			if (admin_name.equals(id) && admin_password.equals(code)) {
+				request.getSession().setAttribute("status", "admin");
+				
 				if (admin_name.equals("admin") && admin_password.equals("password"))
 					response.sendRedirect("/adminPassword");
 				else
 					response.sendRedirect("/adminPage");
 
-				request.getSession().setAttribute("status", "admin");
 			} else {
 				if (users.contains(id)) {
 

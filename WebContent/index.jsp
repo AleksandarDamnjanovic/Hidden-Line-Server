@@ -51,6 +51,7 @@
     <body style="text-align: center;">
         <h1>Hidden Line Web Server</h1>
         <h3>This is private zone</h3>
+        <h5>No warranty of any kind. Owner and associates of this server will hold no responsibility for any kind of damage. If you have any suspicion in regard of nature of this service, go somewhere else and forget about all of this.</h5>
 
         <div class="alertBox">
 
