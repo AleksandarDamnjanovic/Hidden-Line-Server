@@ -22,6 +22,11 @@ public class adminPassword extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		if (request.getParameter("submit")!=null)
+			if (request.getParameter("submit").equals("It's OK"))
+				request.getSession().setAttribute("status", "admin");
+		
 		if (request.getSession().getAttribute("status") != null)
 			if (request.getSession().getAttribute("status").toString().equals("admin")) {
 

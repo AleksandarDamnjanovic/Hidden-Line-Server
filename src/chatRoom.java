@@ -70,18 +70,33 @@ public class chatRoom extends HttpServlet {
 
 			}
 			
+			int num=0;
+			boolean onlyNum=false;
+			
+			if(request.getParameter("num")!=null)
+				onlyNum=true;
+			
 			if (request.getParameter("submit") != null && request.getParameter("message") != null)
 				Records.updateSubList(curentUser, chatWith, curentUser, request.getParameter("message").toString());
 			
 			ArrayList<String>log=Records.searchSubElement(curentUser, chatWith);
 			String fullMessage="";
 			
-			if(log!=null)
+			if(reference!=-1) {
+				reference+=1;
+				num+=1;
+				if(log!=null)
 				if(log.size()>0 && reference<=log.size())
-					for(int i=reference;i<log.size();i++)
-						fullMessage+=log.get(i)+"\n";
-			
-			response.getWriter().print(fullMessage);
+					for(int i=reference;i<log.size();i++) {
+							fullMessage+=log.get(i)+"\n";
+							num++;
+					}
+			}
+				
+			if(!onlyNum)
+				response.getWriter().print(fullMessage);
+			else
+				response.getWriter().print(String.valueOf(num));
 			
 		}else {
 			

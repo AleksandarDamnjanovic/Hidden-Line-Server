@@ -53,17 +53,28 @@ public class UserPage extends HttpServlet {
 
 			}
 
+			int num=0;
+			boolean onlyNum=false;
+			
+			if(request.getParameter("num")!=null)
+				onlyNum=true;
+			
 			String mobileMessage = "";
 			if (!curentUser.equals(""))
 				for (String user : users)
-					if (!user.equals(curentUser))
+					if (!user.equals(curentUser)) {
 						mobileMessage += user + "\n";
-
+						num++;
+					}
+						
 			if (mobileMessage.equals(""))
 				mobileMessage = "connection error";
-
-			response.getWriter().print(mobileMessage);
-
+			
+			if(!onlyNum)
+				response.getWriter().print(mobileMessage);
+			else
+				response.getWriter().print(String.valueOf(num));
+			
 		} else {
 			if (request.getSession().getAttribute("status") != null)
 				if (request.getSession().getAttribute("status").toString().equals("client")) {
