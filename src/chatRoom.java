@@ -82,8 +82,13 @@ public class chatRoom extends HttpServlet {
 			ArrayList<String>log=Records.searchSubElement(curentUser, chatWith);
 			String fullMessage="";
 			
+			
+			
 			if(reference!=-1) {
-				reference+=1;
+				
+				if(request.getParameter("android") == null)
+					reference+=1;
+				
 				num+=1;
 				if(log!=null)
 				if(log.size()>0 && reference<=log.size())
